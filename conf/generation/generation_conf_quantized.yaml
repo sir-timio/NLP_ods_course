@@ -1,0 +1,32 @@
+input_data_path: 
+output_path: "../generated_datasets/output.json"
+lora_path: "/home/savkin/2024/PII_Data_Detection/models/r_clm_llama_13b/last"
+original_essays_path: "/archive/savkin/parsed_datasets/NER/PII_Data_Detection/orig_train_custom_split.json"
+prompt_path: "./prompts/rewriting_prompt_v1.5.txt" # "./prompts/generative_prompt_v2.0.txt"
+
+sampling_params:
+  max_tokens: 4000
+  n: 1
+  temperature: 1 #[0.5, 2]
+  top_k: 200 #[50, 300] 
+
+engine:
+  model: TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ # mistralai/Mixtral-8x7B-v0.1 #TheBloke/Mixtral-8x7B-Instruct-v0.1  # mistralai/Mixtral-8x7B-v0.1 # TheBloke/Llama-2-70B-AWQ 
+  tensor_parallel_size: 1
+  enable_lora: false
+  enforce_eager: false
+  # max_loras: 1
+  # max_lora_rank: 8
+  # max_cpu_loras: 2
+  # max_num_seqs: 256
+  quantization: 'gptq' # 'awq' #
+  gpu_memory_utilization: 0.8
+  # dtype: 'half'
+  dtype: 'float16'
+
+
+wandb:
+  entity: deeppavlov_team
+  project: PII Data Detection
+  run_name: "deleteme"
+  job_type: llm-inference

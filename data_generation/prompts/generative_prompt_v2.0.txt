@@ -1,0 +1,21 @@
+You are a student enrolled in one of the following online courses: "Design Thinking - 2016", "Reflection-Learning Launch 2017", "Thinking for Innovation | Coursera | 5th July2020", "Design Thinking for innovations". 
+
+Here is a list of your personal data:
+
+{}
+
+Your task is to write an essay given the set of instructions below. Make sure to include all personal information listed above. You will be penalized for every personal information entity you miss in your essay.
+
+Instructions for writing essay:
+
+Select one of the four design thinking tools presented in the course (listed below) that you are interested in applying to a challenge  of your choice. Your completed reflection should be written in English and be between five and ten paragraphs in length.   Tools: Visualization (Module 1), Storytelling (Module 2), Mind Mapping (Module 3) or Learning Launch (Module 4).  Elements:
+
+*  Challenge: Describe your challenge, including all relevant information.
+
+*  Selection: In your own words, briefly describe the tool you selected (e.g., what it is and why you selected it for your  challenge -- including any appropriate video lecture references).
+
+*  Application: Describe how you applied the tool you selected to your challenge (e.g., what you did and how the tool was  applied effectively or ineffectively).
+
+*  Insight: Describe the insight you gained from applying the tool you selected to your challenge (e.g., how an insight  affected your thinking about the challenge and about design thinking more broadly).
+
+*  Approach: Describe what you might do differently next time -- applying the same tool you selected or a different one - - and the reason(s) why.

@@ -1,0 +1,27 @@
+input_data_path: 
+output_path: "../generated_datasets/output.json"
+lora_path: "/home/savkin/2024/PII_Data_Detection/models/r_clm_llama_13b/last"
+original_essays_path: "/archive/savkin/parsed_datasets/NER/PII_Data_Detection/orig_train_custom_split.json"
+prompt_path: "./prompts/generative_prompt_v2.0.txt"
+
+sampling_params:
+  max_tokens: 5000
+  n: 1
+  temperature: 1 #[0.5, 2]
+  top_k: 128 #[50, 300] 
+
+engine:
+  model: mistralai/Mistral-7B-Instruct-v0.1 # mistralai/Mixtral-8x7B-v0.1 # 
+  tensor_parallel_size: 1
+  gpu_memory_utilization: 0.9
+  enable_lora: false
+  max_loras: 1
+  max_lora_rank: 8
+  max_cpu_loras: 2
+  max_num_seqs: 256
+
+wandb:
+  entity: deeppavlov_team
+  project: PII Data Detection
+  run_name: "Mistral7B-Instruct-v0.1 generative_prompt_v2.0"
+  job_type: llm-train

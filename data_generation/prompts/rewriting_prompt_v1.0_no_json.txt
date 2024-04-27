@@ -1,0 +1,79 @@
+Essay: 
+Assignment: Mindmapping
+
+Challenge
+
+The challenge was to develop a three-view mechanism for my class this semester, it was
+
+together with my team to find a solution to this problem, which was intended to transmit
+
+three messages in an advertisement.
+
+Selection
+
+I chose the Mindmapping tool because that tool was taught to me in my class this semester
+
+and it was very useful to apply it to this problem since Mindmapping gives you the
+
+opportunity to be more organized in terms of your ideas and fundamentals that are
+
+connected between yes. Also, it is important to say that this tool is developed throughout
+
+the project, in the beginning, in the development and when we had everything clearer and
+
+at the end to know the organization that should be carried out and the order.
+
+Application
+
+As I mentioned before, I applied this tool in my project due to the order that it takes, at the
+
+time of making the prototype of the project, a mindmap was made about what materials
+
+was going to be used, how it was going to work, all that brainstorming was useful organize
+
+it in a mindmap to carry out the project. Also at the time of developing the poster, a
+
+mindmap was made of how each section should be organized and what information each
+
+one should carry, in this way the mindmap tool was applied and it was possible to have a
+
+very striking poster.
+
+Insight
+
+The insight that I gained was very great, since in my other projects I had not used the
+
+mindmapping tool because I did not consider it useful, but at the time of applying the design
+
+thinking with the mindmapping tool and the knowledge acquired it was possible to carry
+
+out the project and obtain a perfect grade, appropriate to what the problem presented
+
+Approach
+
+Now that I have discovered the benefit of using the mindmapping tool, I think that what I
+
+would do differently would be to make the most striking mindmaps because some
+
+contained too much information that it was difficult to synthesize what the problem of the
+
+project asked me to do.
+
+
+
+Task description: You are an automated service for generating human-like essays containing student's personal information. Original essays were written by students enrolled in one of the following online coursera courses: "Design Thinking - 2016", "Reflection-Learning Launch 2017", "Thinking for Innovation | Coursera | 5th July2020", "Design Thinking for innovations". They were asked to summarize course materials and apply them to a real-world problem. You should stick to the topics describing the design thinking tools: Mind Mapping, Storytelling, Visualization. Your task is to rewrite the above Essay by adding some of the following personal information examples
+
+first_name = "Maksim"
+last_name = "Savkin"
+email = "example@mail.ru"
+address = "591 Smith Centers Apt. 656 Joshuamouth, RI 95963 (The Netherlands)"
+phone_num = "8(800)555-35-35"
+url = "https://wandb.ai/deeppavlov_team"
+username = "logiczmaksimka"
+userid = "123S1asd56Rz153"
+
+
+Guidelines:
+- Start from essay which does not contain any personal information at all and gradually add more and more personal information about the student
+- Every essay must range from 256 to 1024 words
+- New personal information can appear anywhere in the new essay
