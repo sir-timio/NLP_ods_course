@@ -13,6 +13,8 @@ class DebertaV2FocalLoss(DebertaV2PreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
         self.num_labels = config.num_labels
+        self.alpha = config.alpha if hasattr(config, "alpha") else 1
+        self.gamma = config.gamma if hasattr(config, "gamma") else 2
 
         self.deberta = DebertaV2Model(config)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
@@ -36,7 +38,9 @@ class DebertaV2FocalLoss(DebertaV2PreTrainedModel):
         labels (`torch.LongTensor` of shape `(batch_size, sequence_length)`, *optional*):
             Labels for computing the token classification loss. Indices should be in `[0, ..., config.num_labels - 1]`.
         """
-        return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+        return_dict = (
+            return_dict if return_dict is not None else self.config.use_return_dict
+        )
 
         outputs = self.deberta(
             input_ids,
@@ -55,19 +59,19 @@ class DebertaV2FocalLoss(DebertaV2PreTrainedModel):
 
         loss = None
         if labels is not None:
-            # loss_fct = nn.CrossEntropyLoss()
-            # loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
-            
-            ce_loss = torch.nn.functional.cross_entropy(logits.view(-1, self.num_labels), labels.view(-1), reduction='none')
+            ce_loss = torch.nn.functional.cross_entropy(
+                logits.view(-1, self.num_labels), labels.view(-1), reduction="none"
+            )
             pt = torch.exp(-ce_loss)
-            alpha = 1
-            gamma = 2
-            loss = (alpha * (1-pt)**gamma * ce_loss).mean()
-            
+            loss = (self.alpha * (1 - pt) ** self.gamma * ce_loss).mean()
+
         if not return_dict:
             output = (logits,) + outputs[1:]
             return ((loss,) + output) if loss is not None else output
 
         return TokenClassifierOutput(
-            loss=loss, logits=logits, hidden_states=outputs.hidden_states, attentions=outputs.attentions
+            loss=loss,
+            logits=logits,
+            hidden_states=outputs.hidden_states,
+            attentions=outputs.attentions,
         )
