@@ -1,36 +1,35 @@
-# NLP_ods_course
+# Personally Identifiable Information Data Detection. NLP Course Project
+Anna Marshalova, Olga Tikhobaeva, Timur Ionov
 
-## Intoduction
-<FIILME>
-
-## Setup
+# Prerequisites
 
 - Python 3.10+
-- 26+ GB GPU (one A100-SXM4-40GB used)
-- wandb account
-- kaggle account
+- 26+ GB GPU (we used one A100-SXM4-40GB)
+- W&B account
+- Kaggle account
 
-- accept rules 
+# Setup
+
+1. Accept the rules of the kaggle competition to access the dataset
 
 ```
 https://www.kaggle.com/competitions/pii-detection-removal-from-educational-data
 ```
 
-- load data
+2. Load data
 ```
 kaggle competitions download -c pii-detection-removal-from-educational-data
 ```
 
-- clone repo
+3. Clone repo
 ```
 git clone https://github.com/sir-timio/NLP_ods_course
 ```
-
-
+4. Install dependencies
 ```
 pip install -r requirements.txt
 ```
-structure
+# Repo structure
 ```
 .
 ├── conf
@@ -67,11 +66,13 @@ structure
 │   │   ├── __init__.py
 ```
 
-- run fake generator
+# Usage
+
+1. Run fake PII generator
 ```
 python src/generation/make_fake_pii.py
 ```
-- run llm rewriting with PII
+2. Run LLM text rewriting with PII
 
 ```
 pybooks/llm_rewriting.ipynb 
@@ -79,7 +80,7 @@ or
 src/generation/llm_rewriting.py
 ```
 
-- insert fake data into generated essays
+3. Insert fake data into the generated essays
 
 ```
 pybooks/fill_ner.ipynb 
@@ -87,12 +88,11 @@ or
 src/generation/fill_ner.py
 ```
 
-- configure and fit model
+4. Configure and fit the model
 
 ```
 python train.py
 ```
+# Results
+All logged metrics are displayed in the [W&B report](https://api.wandb.ai/links/ods_nlp_course/lihg45my).
 
-logged results:
-
-https://api.wandb.ai/links/ods_nlp_course/lihg45my
