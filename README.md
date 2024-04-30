@@ -6,7 +6,7 @@ Anna Marshalova, Olga Tikhobaeva, Timur Ionov
 - Python 3.10+
 - 26+ GB GPU (we used one A100-SXM4-40GB)
 - W&B account
-- kaggle account
+- Kaggle account
 
 # Setup
 
@@ -94,5 +94,5 @@ src/generation/fill_ner.py
 python train.py
 ```
 # Results
-All metrics are logged in this [W&B report](https://api.wandb.ai/links/ods_nlp_course/lihg45my).
+All logged metrics are displayed in the [W&B report](https://api.wandb.ai/links/ods_nlp_course/lihg45my).
 
