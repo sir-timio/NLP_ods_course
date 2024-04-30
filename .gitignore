@@ -161,3 +161,5 @@ cython_debug/
 data
 training_logs
 wandb
+*.zip
+outputs

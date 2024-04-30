@@ -11,7 +11,7 @@ cuda:
   device_order: "PCI_BUS_ID"
 
 paths:
-  dataset_path: "data/essay"
+  dataset_path: "~/workspace/study/ods/data/essay"
   model_save_path: "/archive/ionov/pii/{wandb_run_name}"
 
 model:

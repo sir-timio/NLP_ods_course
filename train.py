@@ -19,10 +19,10 @@ from src.dataset.utils import (
     tokenize_and_align_labels,
 )
 from src.metrics import compute_metrics
-from src.modeling import DebertaV2Baseline
+from src.modeling import DebertaV2Baseline, DebertaV2FocalLoss
 
 
-@hydra.main(config_path="conf", config_name="config")
+@hydra.main(config_path="conf", config_name="train")
 def main(cfg: DictConfig):
     os.environ["WANDB_PROJECT"] = cfg.wandb.project
     os.environ["WANDB_LOG_MODEL"] = str(cfg.wandb.log_model).lower()
@@ -53,7 +53,7 @@ def main(cfg: DictConfig):
         tokenizer=tokenizer, pad_to_multiple_of=16
     )
 
-    model = DebertaV2Baseline.from_pretrained(
+    model = DebertaV2FocalLoss.from_pretrained(
         cfg.model.name,
         id2label=id2label,
         label2id=label2id,
@@ -61,9 +61,7 @@ def main(cfg: DictConfig):
     model.to("cuda")
 
     num_epochs = int(cfg.model.train_steps / (len(train_df) / cfg.model.batch_size))
-    wandb_run_name = (
-        f"{cfg.model.name}-{cfg.model.inference_max_length}_focal_with_rewrited_mixtral"
-    )
+    wandb_run_name = f"{cfg.model.name}-{cfg.model.inference_max_length}_focal"
     training_args = TrainingArguments(
         output_dir=cfg.trainer.output_dir,
         learning_rate=cfg.model.learning_rate,
