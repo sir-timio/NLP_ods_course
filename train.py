@@ -1,18 +1,8 @@
-import json
-import logging
 import os
-import sys
 
-os.environ["WANDB_PROJECT"] = "PII"
-os.environ["WANDB_LOG_MODEL"] = "true"
-os.environ["WANDB_WATCH"] = "all"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-
-sys.path.append("..")
-from datasets import Dataset, DatasetDict, load_dataset
-from scipy.special import softmax
-from tqdm import tqdm
+import hydra
+from datasets import Dataset, DatasetDict
+from omegaconf import DictConfig, OmegaConf
 from transformers import (
     AutoTokenizer,
     DataCollatorForTokenClassification,
@@ -29,33 +19,32 @@ from src.dataset.utils import (
     tokenize_and_align_labels,
 )
 from src.metrics import compute_metrics
-from src.modeling import DebertaV2Baseline, DebertaV2FocalLoss
-
-set_seed(42)
-
-INFERENCE_MAX_LENGTH = 2300
-MODEL_NAME = "microsoft/deberta-v3-base"
-wandb_run_name = f"deberta-base-{INFERENCE_MAX_LENGTH}_focal_with_rewrited_mixtral"
-model_save_path = f"/archive/ionov/pii/{wandb_run_name}"
+from src.modeling import DebertaV2Baseline
 
 
-if __name__ == "__main__":
-    wandb.init("t-ionov")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    train_df = load_json_datasets(
-        [
-            "data/essay/og_train_downsampled.json",
-            # "data/essay/mixtral_train.json",
-        ]
-    )
+@hydra.main(config_path="conf", config_name="config")
+def main(cfg: DictConfig):
+    os.environ["WANDB_PROJECT"] = cfg.wandb.project
+    os.environ["WANDB_LOG_MODEL"] = str(cfg.wandb.log_model).lower()
+    os.environ["WANDB_WATCH"] = cfg.wandb.watch
+    os.environ["CUDA_VISIBLE_DEVICES"] = cfg.cuda.visible_devices
+    os.environ["CUDA_DEVICE_ORDER"] = cfg.cuda.device_order
 
-    val_df = load_json_datasets(["data/essay/og_val.json"])
+    set_seed(42)
+    wandb.init(project=cfg.wandb.project)
+
+    tokenizer = AutoTokenizer.from_pretrained(cfg.model.name)
+    dataset_path = os.path.join(cfg.paths.dataset_path, "og_train_downsampled.json")
+    train_df = load_json_datasets([dataset_path])
+    val_df = load_json_datasets([os.path.join(cfg.paths.dataset_path, "og_val.json")])
     dataset = DatasetDict(
         {"train": Dataset.from_pandas(train_df), "valid": Dataset.from_pandas(val_df)}
     )
 
     tokenized_dataset = dataset.map(
-        lambda x: tokenize_and_align_labels(x, INFERENCE_MAX_LENGTH, tokenizer),
+        lambda x: tokenize_and_align_labels(
+            x, cfg.model.inference_max_length, tokenizer
+        ),
         batched=True,
         remove_columns=dataset["train"].column_names,
     )
@@ -65,37 +54,36 @@ if __name__ == "__main__":
     )
 
     model = DebertaV2Baseline.from_pretrained(
-        # model = DebertaV2FocalLoss.from_pretrained(
-        MODEL_NAME,
+        cfg.model.name,
         id2label=id2label,
         label2id=label2id,
     )
     model.to("cuda")
 
-    BATCH_SIZE = 2
-    TRAIN_STEPS = 10_000
-    num_epochs = int(TRAIN_STEPS / (len(train_df) / BATCH_SIZE))
-    print(num_epochs)
+    num_epochs = int(cfg.model.train_steps / (len(train_df) / cfg.model.batch_size))
+    wandb_run_name = (
+        f"{cfg.model.name}-{cfg.model.inference_max_length}_focal_with_rewrited_mixtral"
+    )
     training_args = TrainingArguments(
-        output_dir="training_logs",
-        learning_rate=1e-5,
-        per_device_train_batch_size=BATCH_SIZE,
-        per_device_eval_batch_size=BATCH_SIZE,
+        output_dir=cfg.trainer.output_dir,
+        learning_rate=cfg.model.learning_rate,
+        per_device_train_batch_size=cfg.model.batch_size,
+        per_device_eval_batch_size=cfg.model.batch_size,
         num_train_epochs=num_epochs,
-        lr_scheduler_type="cosine",
-        weight_decay=0.01,
-        evaluation_strategy="steps",
-        save_strategy="steps",
-        logging_strategy="steps",
-        warmup_steps=600,
-        eval_steps=500,
-        save_steps=500,
-        logging_steps=100,
-        save_total_limit=1,
-        metric_for_best_model="overall_f5_score",
-        greater_is_better=True,
-        load_best_model_at_end=True,
-        report_to="wandb",
+        lr_scheduler_type=cfg.trainer.lr_scheduler_type,
+        weight_decay=cfg.model.weight_decay,
+        evaluation_strategy=cfg.trainer.evaluation_strategy,
+        save_strategy=cfg.trainer.save_strategy,
+        logging_strategy=cfg.trainer.logging_strategy,
+        warmup_steps=cfg.model.warmup_steps,
+        eval_steps=cfg.model.cosine_eval_steps,
+        save_steps=cfg.model.cosine_save_steps,
+        logging_steps=cfg.model.cosine_logging_steps,
+        save_total_limit=cfg.trainer.save_total_limit,
+        metric_for_best_model=cfg.trainer.metric_for_best_model,
+        greater_is_better=cfg.trainer.greater_is_better,
+        load_best_model_at_end=cfg.trainer.load_best_model_at_end,
+        report_to=cfg.trainer.report_to,
         run_name=wandb_run_name,
     )
 
@@ -107,12 +95,14 @@ if __name__ == "__main__":
         tokenizer=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics,
-        # callbacks=[EarlyStoppingCallback(4)]
     )
-
-    train_loader = trainer.get_train_dataloader()
 
     trainer.train()
     wandb.finish()
 
+    model_save_path = cfg.paths.model_save_path.format(wandb_run_name=wandb_run_name)
     trainer.save_model(model_save_path)
+
+
+if __name__ == "__main__":
+    main()
