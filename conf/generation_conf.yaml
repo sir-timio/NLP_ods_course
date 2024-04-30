@@ -1,0 +1,27 @@
+input_data_path: 
+output_path: "../data/essay/rewritten.json"
+original_essays_path: "../data/essay/og_train.json"
+prompt_path: "../conf/prompts/rewriting_prompt_v1.txt"
+
+n_samples: 3000
+sampling_params:
+  max_tokens: 4000
+  n: 1
+  temperature: 1 #[0.5, 2]
+  top_k: 200 #[50, 300] 
+
+engine:
+  model: TheBloke/Mixtral-8x7B-Instruct-v0.1-GPTQ
+  tensor_parallel_size: 1
+  enable_lora: false
+  enforce_eager: false
+  quantization: 'gptq' # 'awq' #
+  gpu_memory_utilization: 0.8
+  dtype: 'float16'
+
+
+wandb:
+  entity: t-ionov
+  project: PII
+  run_name: "mixtral rewriting"
+  job_type: llm-inference
