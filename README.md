@@ -1,55 +1,94 @@
 # NLP_ods_course
 
-### Критерии:
-Всего за проект можно получить 55 баллов. Проект должен включать в себя несколько частей, описание представлено в шаблоне, которому необходимо следовать. 
+## Intoduction
+<FIILME>
 
-Разбалловка:
-- 5 баллов - за подготовку отчета;
-- 5 баллов - за подготовку репозитория;
-- 10 баллов - за описание Related Work и результатов других подходов;
-- 10 баллов - за сбор и описание своего датасета и постановку задачи;
-- 10 баллов - за разработку и описание своего подхода;
+## Setup
 
-если ваш подход показал SotA на вашем датасете, то вам дается еще 15 баллов; под вашим датасетом подразумевается не обязательно собранный вами датасет, но также и известный, для которого вы сделали разметку;
+- Python 3.10+
+- 26+ GB GPU (one A100-SXM4-40GB used)
+- wandb account
+- kaggle account
 
-если ваш подход показал SotA на задаче, по которой есть previous art (то есть опубликованные статьи на этом датасете по этой задаче), то вам дается еще 25 баллов.
+- accept rules 
 
-### Tasks:
-#### подготовка отчета:
-- [ ] gpt+latex makes brrr...
+```
+https://www.kaggle.com/competitions/pii-detection-removal-from-educational-data
+```
 
-#### подготовка репозитория:
-- [ ] раскинуть тетрадки на скрипты
-- [ ] раскинуть скрипты на директории
-- [ ] подключить линтер (ruff) в git actions или добавить инструкцию по ruff для dev
+- load data
+```
+kaggle competitions download -c pii-detection-removal-from-educational-data
+```
 
-#### описание related work:
-- [ ] найти источники решения PII задачи через NER/regexp (например, [presidio](https://microsoft.github.io/presidio/))
-- [ ] найти источники по генерации синты для NER (например, [nuNer](https://arxiv.org/abs/2402.15343))
-- [ ] найти источники по аннотированию данных с помощью LLM (тот же NuNer, аналоги для других задач)
-
-#### за сбор и описание своего датасета и постановку задачи:
-- [ ] актуальность задачи
-- [ ] оформить EDA (перезапустить код и отформатировать)
-- [ ] описать [faker](https://faker.readthedocs.io/en/master/)
-- [x] сгенерировать фейковые данные студентов
-- [ ] описать промпты для вставки сущностей
-- [ ] описать промпты для генерации текста
-
-#### за разработку и описание своего подхода:
-- [ ] про обучение деберты в целом
-- [ ] про замену токенов на другие сущности
-- [ ] про обучение с большим окном контекста
-- [ ] про обучение с overlap&stride 
-- [ ] про подбор порога активации (хак по улучшению метрики f1)
-- [ ] про обучение деберты с разным лоссом и головами (если хватит время)
+- clone repo
+```
+git clone https://github.com/sir-timio/NLP_ods_course
+```
 
 
-#### если ваш подход показал SotA на вашем датасете, то вам дается еще 15 баллов:
-- [ ] берем деберту, исходный трейн/вал, получаем X f1
-- [ ] генерируем данные/автоаннотируем, добавляем к трейну, получаем Y
-- [ ] Y > X
+```
+pip install -r requirements.txt
+```
+structure
+```
+.
+├── conf
+│   ├── generation_conf.yaml
+│   └── prompts
+│       └── rewriting_prompt_v1.txt
+├── data
+│   ├── essay
+│   │   ├── mixtral_train.json
+│   │   ├── og_train_downsampled.json
+│   │   ├── og_train.json
+│   │   ├── og_val.json
+│   │   ├── orig_train.json
+│   └── faker_pii.csv
+├── pybooks
+│   ├── dataset_logging.ipynb
+│   ├── eda.ipynb
+│   ├── fill_ner.ipynb
+│   └── llm_rewriting.ipynb
+├── README.md
+├── src
+│   ├── dataset
+│   │   └── utils.py
+│   ├── generation
+│   │   ├── fill_ner.py
+│   │   ├── llm_rewriting.py
+│   │   ├── make_fake_pii.py
+│   │   └── utils.py
+│   ├── __init__.py
+│   ├── metrics.py
+│   ├── modeling
+│   │   ├── deberta_base.py
+│   │   ├── deberta_focal.py
+│   │   ├── __init__.py
+```
 
+- run fake generator
+```
+python src/generation/make_fake_pii.py
+```
+- run llm rewriting with PII
 
-#### если ваш подход показал SotA на задаче, по которой есть previous art (25 б):
-- думаю пока не успеваем, но в целом можно будет взять малоресурсный ner, сгенерить/автоаннотировать данные как в NuNer и выбить соту.
+```
+pybooks/llm_rewriting.ipynb 
+or 
+src/generation/llm_rewriting.py
+```
+
+- insert fake data into generated essays
+
+```
+pybooks/fill_ner.ipynb 
+or 
+src/generation/fill_ner.py
+```
+
+- configure and fit model
+
+```
+python train.py
+```

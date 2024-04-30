@@ -13,6 +13,8 @@ from omegaconf import OmegaConf
 from spacy import displacy
 from spacy.lang.en import English
 from spacy.tokens import Doc, Span
+from vllm import EngineArgs, LLMEngine, RequestOutput, SamplingParams
+from vllm.lora.request import LoRARequest
 
 import wandb
 
@@ -63,16 +65,18 @@ ENT_COMBINATIONS = [
     *[comb for comb in combinations(PII_ENTS[:4], 3)],
 ]
 
+
 def sample_ent_combination():
     return np.random.choice(ENT_COMBINATIONS, p=None)
+
 
 def dict2str(d):
     return "\n".join([f"{k}={v}" for k, v in d.items()])
 
+
 def build_request(prompt_format, ent_combination, essay=None):
     ents_to_generate = {
-        ent_type: [ent_text]
-        for ent_description, ent_type, ent_text in ent_combination
+        ent_type: [ent_text] for ent_description, ent_type, ent_text in ent_combination
     }
     pii_str = "\n".join(
         [
@@ -92,16 +96,18 @@ def build_request(prompt_format, ent_combination, essay=None):
     }
     return request
 
+
 def create_requests(essays, prompt_format) -> list[dict]:
     essays = [None] if essays is None else essays
     generation_requests = []
     for essay in essays:
-    ent_combination = sample_ent_combination()
-    request = build_request(prompt_format, ent_combination, essay)
-    generation_requests.append(request)
+        ent_combination = sample_ent_combination()
+        request = build_request(prompt_format, ent_combination, essay)
+        generation_requests.append(request)
 
     return generation_requests
-    
+
+
 def process_requests(engine, generation_requests):
     """Continuously pro cess a list of prompts and handle the outputs."""
 
@@ -152,10 +158,16 @@ def main():
     # Read essays for rewriting
     orig_essays_df = pd.read_json(cfg.original_essays_path)
     generation_requests = create_requests(essays, prompt_format)
-    
-    essays_with_pii = orig_essays_df[orig_essays_df.labels.apply(lambda x: set(["O", "B-NAME_STUDENT"]).issubset(set(x)))]
-    orig_essays_df =  orig_essays_df[orig_essays_df.labels.apply(lambda x: set(x) == set(["O"]))]
-    essays = orig_essays_df["full_text"].tolist()[:cfg.n_samples]
+
+    essays_with_pii = orig_essays_df[
+        orig_essays_df.labels.apply(
+            lambda x: set(["O", "B-NAME_STUDENT"]).issubset(set(x))
+        )
+    ]
+    orig_essays_df = orig_essays_df[
+        orig_essays_df.labels.apply(lambda x: set(x) == set(["O"]))
+    ]
+    essays = orig_essays_df["full_text"].tolist()[: cfg.n_samples]
     ENT_COMBINATIONS = np.array(ENT_COMBINATIONS, dtype="object")
     wandb.login()
     with wandb.init(name=wandb_cfg.run_name + "2", job_type=wandb_cfg.job_type) as run:
