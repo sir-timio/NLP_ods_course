@@ -95,4 +95,4 @@ python train.py
 
 logged results:
 
-https://wandb.ai/ods_nlp_course/PII/reports/report--Vmlldzo3NzYxNTc0
+https://api.wandb.ai/links/ods_nlp_course/lihg45my
