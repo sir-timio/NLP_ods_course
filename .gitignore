@@ -163,3 +163,6 @@ training_logs
 wandb
 *.zip
 outputs
+
+#MacOS
+.DS_Store
