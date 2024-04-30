@@ -9,7 +9,7 @@ from transformers.models.deberta_v2.modeling_deberta_v2 import (
 )
 
 
-class DebertaV2(DebertaV2PreTrainedModel):
+class DebertaV2Baseline(DebertaV2PreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
         self.num_labels = config.num_labels
