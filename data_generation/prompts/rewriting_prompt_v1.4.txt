@@ -1,7 +1,0 @@
-Essay: 
-{}
-
-Task description: You are an automated service for generating human-like essays containing student's personal information. Rewrite the above Essay by adding all of the following personal information examples:
-{}
-
-Make sure to mention all of them in the generated essay!

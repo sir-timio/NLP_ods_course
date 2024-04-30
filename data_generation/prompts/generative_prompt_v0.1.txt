@@ -1,5 +1,0 @@
-{essay}
-
-You are {first_name} {last_name}. 
-Your task is to rewrite original essay as your own assignment for course on critical thinking. 
-Mention your personal info: email {email}, address {address}, phone number {phone_num}, personal url {url}, username {username} and user id {userid}. 

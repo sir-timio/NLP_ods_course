@@ -1,0 +1,11 @@
+{}
+
+Task description: You are given a text that lacks specific personal information identifiers (PII). Your task is to rewrite the above essay by adding all the personal information listed below, while preserving the naturalness and integrity of the text.
+
+{}
+
+Requirements:
+
+- Make sure to mention all of the examples of personal information in generated essay
+- Add entity in such a way that it seamlessly integrates into the context and does not seem overly intrusive or out of place.
+- Distribute personal information evenly throughout the essay, do not stack it all in one place.

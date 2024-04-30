@@ -1,0 +1,39 @@
+defaults:
+  - _self_
+
+wandb:
+  project: "PII"
+  log_model: true
+  watch: "all"
+
+cuda:
+  visible_devices: "0"
+  device_order: "PCI_BUS_ID"
+
+paths:
+  dataset_path: "data/essay"
+  model_save_path: "/archive/ionov/pii/{wandb_run_name}"
+
+model:
+  name: "microsoft/deberta-v3-base"
+  batch_size: 2
+  train_steps: 10000
+  inference_max_length: 2300
+  learning_rate: 1e-5
+  weight_decay: 0.01
+  warmup_steps: 600
+  cosine_eval_steps: 500
+  cosine_save_steps: 500
+  cosine_logging_steps: 100
+
+trainer:
+  output_dir: "training_logs"
+  lr_scheduler_type: "cosine"
+  evaluation_strategy: "steps"
+  save_strategy: "steps"
+  logging_strategy: "steps"
+  metric_for_best_model: "overall_f5_score"
+  greater_is_better: true
+  load_best_model_at_end: true
+  save_total_limit: 1
+  report_to: "wandb"
