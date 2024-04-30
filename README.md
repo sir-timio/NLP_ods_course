@@ -10,7 +10,7 @@ Anna Marshalova, Olga Tikhobaeva, Timur Ionov
 
 # Setup
 
-1. Accept rules of the kaggle comprtition to access the dataset
+1. Accept the rules of the kaggle competition to access the dataset
 
 ```
 https://www.kaggle.com/competitions/pii-detection-removal-from-educational-data
@@ -88,7 +88,7 @@ or
 src/generation/fill_ner.py
 ```
 
-4. Configure and fit model
+4. Configure and fit the model
 
 ```
 python train.py
