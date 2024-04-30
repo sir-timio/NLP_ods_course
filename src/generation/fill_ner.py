@@ -13,7 +13,6 @@ from utils import (
     replace_ents_with_labels,
     replace_labels_with_ents,
     tokenize_df_with_spacy,
-    visualize_ents,
 )
 
 

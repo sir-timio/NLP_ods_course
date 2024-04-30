@@ -1,6 +1,5 @@
 # it is strongly recommended to use the appropriate file in pybooks
 import argparse
-import json
 import os
 from itertools import combinations
 
@@ -8,12 +7,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from hydra import compose, initialize
-from IPython.core.display import HTML, display
-from omegaconf import OmegaConf
-from spacy import displacy
-from spacy.lang.en import English
-from spacy.tokens import Doc, Span
-from vllm import EngineArgs, LLMEngine, RequestOutput, SamplingParams
+from vllm import EngineArgs, LLMEngine, SamplingParams
 from vllm.lora.request import LoRARequest
 
 import wandb

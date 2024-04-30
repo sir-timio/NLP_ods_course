@@ -92,3 +92,7 @@ src/generation/fill_ner.py
 ```
 python train.py
 ```
+
+logged results:
+
+https://wandb.ai/ods_nlp_course/PII/reports/report--Vmlldzo3NzYxNTc0

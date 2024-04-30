@@ -1,37 +1,21 @@
 import json
 import logging
 import os
+import sys
 
 os.environ["WANDB_PROJECT"] = "PII"
 os.environ["WANDB_LOG_MODEL"] = "true"
 os.environ["WANDB_WATCH"] = "all"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-import sys
-from collections import defaultdict
-from pathlib import Path
-from typing import Dict
 
 sys.path.append("..")
-
-import evaluate
-import numpy as np
-import pandas as pd
-import torch
 from datasets import Dataset, DatasetDict, load_dataset
 from scipy.special import softmax
-from seqeval.metrics import (
-    classification_report,
-    f1_score,
-    precision_score,
-    recall_score,
-)
 from tqdm import tqdm
 from transformers import (
-    AutoModelForTokenClassification,
     AutoTokenizer,
     DataCollatorForTokenClassification,
-    EarlyStoppingCallback,
     Trainer,
     TrainingArguments,
     set_seed,
@@ -39,7 +23,6 @@ from transformers import (
 
 import wandb
 from src.dataset.utils import (
-    align_labels_with_tokens,
     id2label,
     label2id,
     load_json_datasets,
