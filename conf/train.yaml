@@ -6,9 +6,6 @@ wandb:
   log_model: true
   watch: "all"
 
-cuda:
-  visible_devices: "0"
-  device_order: "PCI_BUS_ID"
 
 paths:
   dataset_path: "~/workspace/study/ods/data/essay"
@@ -22,9 +19,10 @@ model:
   learning_rate: 1e-5
   weight_decay: 0.01
   warmup_steps: 600
-  cosine_eval_steps: 500
-  cosine_save_steps: 500
-  cosine_logging_steps: 100
+  eval_steps: 500
+  save_steps: 500
+  logging_steps: 100
+  suffix: "focal"
 
 trainer:
   output_dir: "training_logs"

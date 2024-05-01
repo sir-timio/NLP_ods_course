@@ -1,5 +1,7 @@
 import os
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 import hydra
 from datasets import Dataset, DatasetDict
 from omegaconf import DictConfig, OmegaConf
@@ -27,15 +29,15 @@ def main(cfg: DictConfig):
     os.environ["WANDB_PROJECT"] = cfg.wandb.project
     os.environ["WANDB_LOG_MODEL"] = str(cfg.wandb.log_model).lower()
     os.environ["WANDB_WATCH"] = cfg.wandb.watch
-    os.environ["CUDA_VISIBLE_DEVICES"] = cfg.cuda.visible_devices
-    os.environ["CUDA_DEVICE_ORDER"] = cfg.cuda.device_order
 
     set_seed(42)
     wandb.init(project=cfg.wandb.project)
 
     tokenizer = AutoTokenizer.from_pretrained(cfg.model.name)
     dataset_path = os.path.join(cfg.paths.dataset_path, "og_train_downsampled.json")
-    train_df = load_json_datasets([dataset_path])
+    ext_dataset_path = os.path.join(cfg.paths.dataset_path, "mixtral_train.json")
+    train_df = load_json_datasets([dataset_path, ext_dataset_path])
+    # train_df = load_json_datasets([dataset_path])
     val_df = load_json_datasets([os.path.join(cfg.paths.dataset_path, "og_val.json")])
     dataset = DatasetDict(
         {"train": Dataset.from_pandas(train_df), "valid": Dataset.from_pandas(val_df)}
@@ -61,7 +63,9 @@ def main(cfg: DictConfig):
     model.to("cuda")
 
     num_epochs = int(cfg.model.train_steps / (len(train_df) / cfg.model.batch_size))
-    wandb_run_name = f"{cfg.model.name}-{cfg.model.inference_max_length}_focal"
+    wandb_run_name = (
+        f"{cfg.model.name}-{cfg.model.inference_max_length}_{cfg.model.suffix}"
+    )
     training_args = TrainingArguments(
         output_dir=cfg.trainer.output_dir,
         learning_rate=cfg.model.learning_rate,
@@ -74,9 +78,9 @@ def main(cfg: DictConfig):
         save_strategy=cfg.trainer.save_strategy,
         logging_strategy=cfg.trainer.logging_strategy,
         warmup_steps=cfg.model.warmup_steps,
-        eval_steps=cfg.model.cosine_eval_steps,
-        save_steps=cfg.model.cosine_save_steps,
-        logging_steps=cfg.model.cosine_logging_steps,
+        eval_steps=cfg.model.eval_steps,
+        save_steps=cfg.model.save_steps,
+        logging_steps=cfg.model.logging_steps,
         save_total_limit=cfg.trainer.save_total_limit,
         metric_for_best_model=cfg.trainer.metric_for_best_model,
         greater_is_better=cfg.trainer.greater_is_better,
@@ -96,6 +100,7 @@ def main(cfg: DictConfig):
     )
 
     trainer.train()
+    trainer.save_model("/archive/ionov/pii/focal_with_ext")
     wandb.finish()
 
     model_save_path = cfg.paths.model_save_path.format(wandb_run_name=wandb_run_name)
