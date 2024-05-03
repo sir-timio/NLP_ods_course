@@ -1,4 +1,7 @@
 # Personally Identifiable Information Data Detection. NLP Course Project
+
+[report](ods_report.pdf)
+
 Anna Marshalova, Olga Tikhobaeva, Timur Ionov
 
 # Prerequisites
@@ -17,19 +20,25 @@ https://www.kaggle.com/competitions/pii-detection-removal-from-educational-data
 ```
 
 2. Load data
+
 ```
 kaggle competitions download -c pii-detection-removal-from-educational-data
 ```
 
 3. Clone repo
+
 ```
 git clone https://github.com/sir-timio/NLP_ods_course
 ```
+
 4. Install dependencies
+
 ```
 pip install -r requirements.txt
 ```
+
 # Repo structure
+
 ```
 .
 ├── conf
@@ -69,9 +78,11 @@ pip install -r requirements.txt
 # Usage
 
 1. Run fake PII generator
+
 ```
 python src/generation/make_fake_pii.py
 ```
+
 2. Run LLM text rewriting with PII
 
 ```
@@ -93,6 +104,7 @@ src/generation/fill_ner.py
 ```
 python train.py
 ```
-# Results
-All logged metrics are displayed in the [W&B report](https://api.wandb.ai/links/ods_nlp_course/lihg45my).
 
+# Results
+
+All logged metrics are displayed in the [W&amp;B report](https://api.wandb.ai/links/ods_nlp_course/lihg45my).
